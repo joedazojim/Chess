@@ -22,7 +22,7 @@ namespace Chess
         {
             InitializeComponent();
             Board.InitializeBoard();
-            Console.WriteLine(Board.getPieceAt(5,5));
+            Console.WriteLine(Board.getPieceAt(7, 1));
         }
 
     }
