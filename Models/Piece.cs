@@ -38,7 +38,7 @@ namespace Chess.Models
             return otherPiece != null && otherPiece.Color == this.Color;
         }
 
-        public abstract List<(int row, int col)> GetValidMoves(int currentRow, int currentCol);
+        public abstract List<(int row, int col)> GetValidMoves();
     }
 
     // KING
@@ -47,9 +47,24 @@ namespace Chess.Models
     {
         public King(Color color, PieceType type, int row, int col) : base(color, type, row, col) { }
 
-        public override List<(int, int)> GetValidMoves(int currentRow, int currentCol)
+        public override List<(int, int)> GetValidMoves()
         {
-            return null;
+            var moves = new List<(int, int)>();
+            int[] dRow = { -1, -1, -1, 0, 0, 1, 1, 1 };
+            int[] dCol = { -1, 0, 1, -1, 1, -1, 0, 1 };
+
+            for (int i = 0; i < 8; i++)
+            {
+                int r = this.Row + dRow[i];
+                int c = this.Col + dCol[i];
+                if (IsOnBoard(r, c))
+                {
+                    Piece? target = Board.getPieceAt(r, c);
+                    if (target == null || !IsFriendly(target))
+                        moves.Add((r, c));
+                }
+            }
+            return moves;
         }
     }
 
@@ -57,7 +72,7 @@ namespace Chess.Models
     {
         public Queen(Color color, PieceType type, int row, int col) : base(color, type, row, col) { }
 
-        public override List<(int, int)> GetValidMoves(int currentRow, int currentCol)
+        public override List<(int, int)> GetValidMoves()
         {
             return null;
         }
@@ -67,7 +82,7 @@ namespace Chess.Models
     {
         public Bishop(Color color, PieceType type, int row, int col) : base(color, type, row, col) { }
 
-        public override List<(int, int)> GetValidMoves(int currentRow, int currentCol)
+        public override List<(int, int)> GetValidMoves()
         {
             return null;
         }
@@ -77,7 +92,7 @@ namespace Chess.Models
     {
         public Tower(Color color, PieceType type, int row, int col) : base(color, type, row, col) { }
 
-        public override List<(int, int)> GetValidMoves(int currentRow, int currentCol)
+        public override List<(int, int)> GetValidMoves()
         {
             return null;
         }
@@ -87,7 +102,7 @@ namespace Chess.Models
     {
         public Knight(Color color, PieceType type, int row, int col) : base(color, type, row, col) { }
 
-        public override List<(int, int)> GetValidMoves(int currentRow, int currentCol)
+        public override List<(int, int)> GetValidMoves()
         {
             return null;
         }
@@ -97,7 +112,7 @@ namespace Chess.Models
     {
         public Pawn(Color color, PieceType type, int row, int col) : base(color, type, row, col) { }
 
-        public override List<(int, int)> GetValidMoves(int currentRow, int currentCol)
+        public override List<(int, int)> GetValidMoves()
         {
             return null;
         }
