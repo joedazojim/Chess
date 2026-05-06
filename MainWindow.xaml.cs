@@ -20,7 +20,7 @@ namespace Chess
         {
             InitializeComponent();
 
-            Console.WriteLine("Hello World");
         }
+
     }
 }
