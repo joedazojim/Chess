@@ -74,7 +74,35 @@ namespace Chess.Models
 
         public override List<(int, int)> GetValidMoves()
         {
-            return null;
+            var moves = new List<(int, int)>();
+            int[] dRow = { -1, -1, -1, 0, 0, 1, 1, 1 };
+            int[] dCol = { -1, 0, 1, -1, 1, -1, 0, 1 };
+
+            for (int i = 0; i < 8; i++)
+            {
+                int r = this.Row + dRow[i];
+                int c = this.Col + dCol[i];
+
+                while(IsOnBoard(r, c))
+                {
+                    Piece? target = Board.getPieceAt(r, c);
+                    if (target == null)
+                    {
+                        moves.Add((r, c));
+                    }
+                    else
+                    {
+                        if (!IsFriendly(target))
+                        {
+                            moves.Add((r, c));
+                        }
+                        break;
+                    }
+                    r += dRow[i];
+                    c += dCol[i];
+                }
+            }
+            return moves;
         }
     }
 
@@ -84,7 +112,35 @@ namespace Chess.Models
 
         public override List<(int, int)> GetValidMoves()
         {
-            return null;
+            var moves = new List<(int, int)>();
+            int[] dRow = { -1, -1, 1, 1 };
+            int[] dCol = { -1, 1, -1, 1 };
+
+            for (int i = 0; i < 4; i++)
+            {
+                int r = this.Row + dRow[i];
+                int c = this.Col + dCol[i];
+
+                while (IsOnBoard(r, c))
+                {
+                    Piece? target = Board.getPieceAt(r, c);
+                    if (target == null)
+                    {
+                        moves.Add((r, c));
+                    }
+                    else
+                    {
+                        if (!IsFriendly(target))
+                        {
+                            moves.Add((r, c));
+                        }
+                        break;
+                    }
+                    r += dRow[i];
+                    c += dCol[i];
+                }
+            }
+            return moves;
         }
     }
 
@@ -94,7 +150,35 @@ namespace Chess.Models
 
         public override List<(int, int)> GetValidMoves()
         {
-            return null;
+            var moves = new List<(int, int)>();
+            int[] dRow = { -1, 0, 0, 1 };
+            int[] dCol = { 0, -1, 1, 0 };
+
+            for (int i = 0; i < 4; i++)
+            {
+                int r = this.Row + dRow[i];
+                int c = this.Col + dCol[i];
+
+                while (IsOnBoard(r, c))
+                {
+                    Piece? target = Board.getPieceAt(r, c);
+                    if (target == null)
+                    {
+                        moves.Add((r, c));
+                    }
+                    else
+                    {
+                        if (!IsFriendly(target))
+                        {
+                            moves.Add((r, c));
+                        }
+                        break;
+                    }
+                    r += dRow[i];
+                    c += dCol[i];
+                }
+            }
+            return moves;
         }
     }
 
