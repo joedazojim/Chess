@@ -28,6 +28,7 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+ <!--
         <Rectangle HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100" Fill="Black" Grid.Column="0" Grid.Row="1"/>
         <Rectangle HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100" Fill="Black" Grid.Column="0" Grid.Row="3"/>
         <Rectangle HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100" Fill="Black" Grid.Column="0" Grid.Row="5"/>
@@ -95,6 +96,6 @@
         <Rectangle HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100" Fill="White" Grid.Column="7" Grid.Row="7"/>
 
         <Rectangle Stroke="Black" Grid.ColumnSpan="8" Margin="0,0,0,0" Grid.RowSpan="8"/>
-
+        -->
     </Grid>
 </Window>
