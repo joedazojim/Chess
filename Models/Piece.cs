@@ -13,16 +13,93 @@ namespace Chess.Models
         White, Black
     }
 
-    public class Piece {
-        public Color Color { get; set; }
-        public PieceType Type { get; set; }
+    public abstract class Piece
+    {
+        public Color Color { get; protected set; }
+        public PieceType Type { get; protected set; }
         public int Row { get; set; }
-        public int Column { get; set; }
+        public int Col { get; set; }
 
-        public Piece(PieceType type, Color color)
+        protected Piece(Color color, PieceType type, int row, int col)
         {
-            Type = type;
             Color = color;
+            Type = type;
+            Row = row; 
+            Col = col;
+        }
+
+        protected bool IsOnBoard(int row, int col)
+        {
+            return row >= 0 && row < 8 && col >= 0 && col < 8;
+        }
+
+        protected bool IsFriendly(Piece? otherPiece)
+        {
+            return otherPiece != null && otherPiece.Color == this.Color;
+        }
+
+        public abstract List<(int row, int col)> GetValidMoves(int currentRow, int currentCol);
+    }
+
+    // KING
+
+    public class King : Piece
+    {
+        public King(Color color, PieceType type, int row, int col) : base(color, type, row, col) { }
+
+        public override List<(int, int)> GetValidMoves(int currentRow, int currentCol)
+        {
+            return null;
+        }
+    }
+
+    public class Queen : Piece
+    {
+        public Queen(Color color, PieceType type, int row, int col) : base(color, type, row, col) { }
+
+        public override List<(int, int)> GetValidMoves(int currentRow, int currentCol)
+        {
+            return null;
+        }
+    }
+
+    public class Bishop : Piece
+    {
+        public Bishop(Color color, PieceType type, int row, int col) : base(color, type, row, col) { }
+
+        public override List<(int, int)> GetValidMoves(int currentRow, int currentCol)
+        {
+            return null;
+        }
+    }
+
+    public class Tower : Piece
+    {
+        public Tower(Color color, PieceType type, int row, int col) : base(color, type, row, col) { }
+
+        public override List<(int, int)> GetValidMoves(int currentRow, int currentCol)
+        {
+            return null;
+        }
+    }
+
+    public class Knight : Piece
+    {
+        public Knight(Color color, PieceType type, int row, int col) : base(color, type, row, col) { }
+
+        public override List<(int, int)> GetValidMoves(int currentRow, int currentCol)
+        {
+            return null;
+        }
+    }
+
+    public class Pawn : Piece
+    {
+        public Pawn(Color color, PieceType type, int row, int col) : base(color, type, row, col) { }
+
+        public override List<(int, int)> GetValidMoves(int currentRow, int currentCol)
+        {
+            return null;
         }
     }
 }
