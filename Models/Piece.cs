@@ -104,7 +104,22 @@ namespace Chess.Models
 
         public override List<(int, int)> GetValidMoves()
         {
-            return null;
+            var moves = new List<(int, int)>();
+            int[] dRow = { -2, -2, -1, -1, 1, 1, 2, 2 };
+            int[] dCol = { -1, 1, -2, 2, -2, 2, -1, 1 };
+
+            for (int i = 0; i < 8; i++)
+            {
+                int r = this.Row + dRow[i];
+                int c = this.Col + dCol[i];
+                if (IsOnBoard(r, c))
+                {
+                    Piece? target = Board.getPieceAt(r, c);
+                    if (target == null || !IsFriendly(target))
+                        moves.Add((r, c));
+                }
+            }
+            return moves;
         }
     }
 
