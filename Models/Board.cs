@@ -8,7 +8,7 @@ namespace Chess.Models
 {
     public class Board
     {
-        static Piece[,] board = new Piece[8, 8];
+        static Piece?[,] board = new Piece[8, 8];
       
         public static void InitializeBoard(Grid mainGrid) {
           // Initialize the board with pieces in their starting positions
@@ -42,7 +42,7 @@ namespace Chess.Models
             {
                 for (int c = 0; c < 8; c++)
                 {
-                    Piece piece = board[r, c];
+                    Piece? piece = board[r, c];
 
                     if (piece != null)
                     {
@@ -68,7 +68,7 @@ namespace Chess.Models
 
         }
 
-        public static Piece getPieceAt(int row, int column) {
+        public static Piece? getPieceAt(int row, int column) {
             if (board[row, column] != null) {
                 return board[row, column];                   
             } else

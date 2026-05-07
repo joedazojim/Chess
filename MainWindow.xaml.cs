@@ -23,6 +23,7 @@ namespace Chess
         {
             InitializeComponent();
             Board.InitializeBoard(mainGrid);
+            Console.WriteLine(Board.getPieceAt(0, 0));
         }
 
     }
