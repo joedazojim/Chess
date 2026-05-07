@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Chess.Models;
+using Chess.Services;
 
 namespace Chess
 {
@@ -21,8 +22,7 @@ namespace Chess
         public MainWindow()
         {
             InitializeComponent();
-            Board.InitializeBoard();
-            Console.WriteLine(Board.getPieceAt(7, 1));
+            Board.InitializeBoard(mainGrid);
         }
 
     }
