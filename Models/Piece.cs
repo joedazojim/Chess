@@ -218,14 +218,14 @@ namespace Chess.Models
 
             if (this.Color == Color.White)
             {
-                int[] dRow = { 1 };
-                int[] dCol = { 0 };
+                int[] dRow = { 1 , 0};
+                int[] dCol = { 0 , 0};
                 int[] dEatRow = { 1, 1 };
                 int[] dEatCol = { -1, 1 };
                 int[] dFirstRow = { 1, 2 };
                 int[] dFirstCol = { 0, 0 };
 
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < 2; i++)
                 {
                     int r = this.Row + dRow[i];
                     int c = this.Col + dCol[i];
@@ -246,7 +246,7 @@ namespace Chess.Models
                             else if (IsOnBoard(rEat, cEat) == true)
                             {
                                 target = Board.getPieceAt(rEat, cEat);
-                                if (target != null || !IsFriendly(target))
+                                if (target != null && !IsFriendly(target))
                                 {
                                     moves.Add((rEat, cEat));
                                 }
@@ -264,7 +264,7 @@ namespace Chess.Models
                         else if (IsOnBoard(rEat, cEat) == true)
                         {
                             target = Board.getPieceAt(rEat, cEat);
-                            if (target != null || !IsFriendly(target))
+                            if (target != null && !IsFriendly(target))
                             {
                                 moves.Add((rEat, cEat));
                             }
@@ -275,14 +275,14 @@ namespace Chess.Models
             }
             else 
             {
-                int[] dRow = { -1 };
-                int[] dCol = { 0 };
+                int[] dRow = { -1, 0 };
+                int[] dCol = { 0 , 0 };
                 int[] dEatRow = { -1, -1};
                 int[] dEatCol = { -1, 1};
                 int[] dFirstRow = { -1, -2 };
                 int[] dFirstCol = { 0, 0};
 
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < 2; i++)
                 {
                     int r = this.Row + dRow[i];
                     int c = this.Col + dCol[i];
@@ -303,7 +303,7 @@ namespace Chess.Models
                             else if (IsOnBoard(rEat, cEat) == true)
                             {
                                 target = Board.getPieceAt(rEat, cEat);
-                                if (target != null || !IsFriendly(target))
+                                if (target != null && !IsFriendly(target))
                                 {
                                     moves.Add((rEat, cEat));
                                 }
@@ -321,7 +321,7 @@ namespace Chess.Models
                         else if (IsOnBoard(rEat, cEat) == true)
                         {
                             target = Board.getPieceAt(rEat, cEat);
-                            if (target != null || !IsFriendly(target))
+                            if (target != null && !IsFriendly(target))
                             {
                                 moves.Add((rEat, cEat));
                             }
