@@ -216,119 +216,41 @@ namespace Chess.Models
         {
             var moves = new List<(int, int)>();
 
-            if (this.Color == Color.White)
+            int direction = Color == Color.White ? 1 : -1;
+            int startRow = Color == Color.White ? 1 : 6;
+
+            int oneRow = Row + direction;
+
+            // Move forward one square
+            if (IsOnBoard(oneRow, Col) && Board.getPieceAt(oneRow, Col) == null)
             {
-                int[] dRow = { 1 , 0};
-                int[] dCol = { 0 , 0};
-                int[] dEatRow = { 1, 1 };
-                int[] dEatCol = { -1, 1 };
-                int[] dFirstRow = { 1, 2 };
-                int[] dFirstCol = { 0, 0 };
+                moves.Add((oneRow, Col));
 
-                for (int i = 0; i < 2; i++)
+                // Move forward two squares from starting row
+                int twoRow = Row + (2 * direction);
+                if (Row == startRow &&
+                    IsOnBoard(twoRow, Col) &&
+                    Board.getPieceAt(twoRow, Col) == null)
                 {
-                    int r = this.Row + dRow[i];
-                    int c = this.Col + dCol[i];
-                    int rEat = this.Row + dEatRow[i];
-                    int cEat = this.Col + dEatCol[i];
-                    int rFirst = this.Row + dFirstRow[i];
-                    int cFirst = this.Col + dFirstCol[i];
-
-                    if (i == 0)
-                    {
-                        if (IsOnBoard(rFirst, cFirst) == true)
-                        {
-                            Piece? target = Board.getPieceAt(rFirst, cFirst);
-                            if (target == null || !IsFriendly(target))
-                            {
-                                moves.Add((rFirst, cFirst));
-                            }
-                            else if (IsOnBoard(rEat, cEat) == true)
-                            {
-                                target = Board.getPieceAt(rEat, cEat);
-                                if (target != null && !IsFriendly(target))
-                                {
-                                    moves.Add((rEat, cEat));
-                                }
-                            }
-                        }
-
-                    }
-                    else if (IsOnBoard(r, c) == true)
-                    {
-                        Piece? target = Board.getPieceAt(r, c);
-                        if (target == null || !IsFriendly(target))
-                        {
-                            moves.Add((r, c));
-                        }
-                        else if (IsOnBoard(rEat, cEat) == true)
-                        {
-                            target = Board.getPieceAt(rEat, cEat);
-                            if (target != null && !IsFriendly(target))
-                            {
-                                moves.Add((rEat, cEat));
-                            }
-                        }
-                    }
-
+                    moves.Add((twoRow, Col));
                 }
             }
-            else 
+
+            // Diagonal captures
+            int[] captureCols = { Col - 1, Col + 1 };
+
+            foreach (int captureCol in captureCols)
             {
-                int[] dRow = { -1, 0 };
-                int[] dCol = { 0 , 0 };
-                int[] dEatRow = { -1, -1};
-                int[] dEatCol = { -1, 1};
-                int[] dFirstRow = { -1, -2 };
-                int[] dFirstCol = { 0, 0};
-
-                for (int i = 0; i < 2; i++)
+                if (IsOnBoard(oneRow, captureCol))
                 {
-                    int r = this.Row + dRow[i];
-                    int c = this.Col + dCol[i];
-                    int rEat = this.Row + dEatRow[i];
-                    int cEat = this.Col + dEatCol[i];
-                    int rFirst = this.Row + dFirstRow[i];
-                    int cFirst = this.Col + dFirstCol[i];
-
-                    if (i == 0)
+                    Piece? target = Board.getPieceAt(oneRow, captureCol);
+                    if (target != null && !IsFriendly(target))
                     {
-                        if (IsOnBoard(rFirst, cFirst) == true)
-                        {
-                            Piece? target = Board.getPieceAt(rFirst, cFirst);
-                            if (target == null || !IsFriendly(target))
-                            {
-                                moves.Add((rFirst, cFirst));
-                            }
-                            else if (IsOnBoard(rEat, cEat) == true)
-                            {
-                                target = Board.getPieceAt(rEat, cEat);
-                                if (target != null && !IsFriendly(target))
-                                {
-                                    moves.Add((rEat, cEat));
-                                }
-                            }
-                        }
-
-                    }
-                    else if (IsOnBoard(r, c) == true)
-                    {
-                        Piece? target = Board.getPieceAt(r, c);
-                        if (target == null || !IsFriendly(target))
-                        {
-                            moves.Add((r, c));
-                        }
-                        else if (IsOnBoard(rEat, cEat) == true)
-                        {
-                            target = Board.getPieceAt(rEat, cEat);
-                            if (target != null && !IsFriendly(target))
-                            {
-                                moves.Add((rEat, cEat));
-                            }
-                        }
+                        moves.Add((oneRow, captureCol));
                     }
                 }
-            }   
+            }
+
             return moves;
         }
     }
