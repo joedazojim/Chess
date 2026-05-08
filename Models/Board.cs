@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Shapes;
 using System.Windows.Media.Imaging;
 
 namespace Chess.Models
@@ -9,15 +13,16 @@ namespace Chess.Models
     public class Board
     {
         static Piece?[,] board = new Piece[8, 8];
-      
-        public static void InitializeBoard(Grid mainGrid) {
-          // Initialize the board with pieces in their starting positions
-          // Placing pawns
-            for (int i = 0; i < 8; i++) {
+
+        public static void InitializeBoard(Grid mainGrid)
+        {
+            // Placing pawns
+            for (int i = 0; i < 8; i++)
+            {
                 board[1, i] = new Pawn(Color.White, PieceType.Pawn, 1, i);
                 board[6, i] = new Pawn(Color.Black, PieceType.Pawn, 6, i);
             }
-          // Placing white pieces
+            // Placing white pieces
             board[0, 0] = new Tower(Color.White, PieceType.Tower, 0, 0);
             board[0, 1] = new Knight(Color.White, PieceType.Knight, 0, 1);
             board[0, 2] = new Bishop(Color.White, PieceType.Bishop, 0, 2);
@@ -27,7 +32,7 @@ namespace Chess.Models
             board[0, 6] = new Knight(Color.White, PieceType.Knight, 0, 6);
             board[0, 7] = new Tower(Color.White, PieceType.Tower, 0, 7);
 
-          // Placing black pieces
+            // Placing black pieces
             board[7, 0] = new Tower(Color.Black, PieceType.Tower, 7, 0);
             board[7, 1] = new Knight(Color.Black, PieceType.Knight, 7, 1);
             board[7, 2] = new Bishop(Color.Black, PieceType.Bishop, 7, 2);
@@ -37,45 +42,91 @@ namespace Chess.Models
             board[7, 6] = new Knight(Color.Black, PieceType.Knight, 7, 6);
             board[7, 7] = new Tower(Color.Black, PieceType.Tower, 7, 7);
 
-          //Render the board in the UI
+            // Render the board in the UI with emojis
             for (int r = 0; r < 8; r++)
             {
                 for (int c = 0; c < 8; c++)
                 {
+
                     Piece? piece = board[r, c];
 
                     if (piece != null)
                     {
+                        Border square = new Border
+                        {
+                            Background = piece.Color == Color.White ? Brushes.Black : Brushes.White,
+                            BorderBrush = Brushes.Black,
+                            Width = 60,
+                            Height = 60,
+                            BorderThickness = new Thickness(1),
+                            CornerRadius = new CornerRadius(20)
+                        };
 
-                        /* Use this when assets are ready
-                        Image img = new Image();
+                        square.MouseLeftButtonDown += Square_MouseLeftButtonDown;
 
-                        img.Source = new BitmapImage(
-                            new Uri(piece.*ImagePath*, UriKind.Relative)
-                        );
-                        */
+                        TextBlock pieceText = new TextBlock();
+                        pieceText.Text = GetPieceEmoji(piece.Type, piece.Color);
+                        pieceText.FontSize = 36;
 
-                        TextBlock img = new TextBlock();
-                        img.Text = "x";
+                        // Center 
+                        pieceText.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                        pieceText.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-                        Grid.SetRow(img, r);
-                        Grid.SetColumn(img, c);
+                        // Set color
+                        pieceText.Foreground = Brushes.Gray;
 
-                        mainGrid.Children.Add(img);
+                        square.Child = pieceText;
+
+                        Grid.SetRow(square, r);
+                        Grid.SetColumn(square, c);
+
+                        mainGrid.Children.Add(square);
                     }
                 }
             }
-
         }
 
-        public static Piece? getPieceAt(int row, int column) {
-            if (board[row, column] != null) {
-                return board[row, column];                   
-            } else
+        private static string GetPieceEmoji(PieceType type, Color color)
+        {
+            string whitePiece = type switch
             {
-                return null;
-            }
+                PieceType.King => "♔",
+                PieceType.Queen => "♕",
+                PieceType.Tower => "♖",
+                PieceType.Bishop => "♗",
+                PieceType.Knight => "♘",
+                PieceType.Pawn => "♙",
+                _ => "?"
+            };
+
+            string blackPiece = type switch
+            {
+                PieceType.King => "♚",
+                PieceType.Queen => "♛",
+                PieceType.Tower => "♜",
+                PieceType.Bishop => "♝",
+                PieceType.Knight => "♞",
+                PieceType.Pawn => "♟",
+                _ => "?"
+            };
+
+            return color == Color.White ? whitePiece : blackPiece;
         }
 
+        public static Piece? getPieceAt(int row, int column)
+        {
+            if (row >= 0 && row < 8 && column >= 0 && column < 8)
+            {
+                return board[row, column];
+            }
+            return null;
+        }
+        // Place holder for clicking a piece, !!! ADD MISSING LOGIC !!!
+        private static void Square_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Border clickedSquare = (Border)sender;
+
+            MessageBox.Show("Square clicked!");
+        }
     }
 }
