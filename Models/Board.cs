@@ -55,9 +55,9 @@ namespace Chess.Models
                         Border square = new Border
                         {
                             Background = piece.Color == Color.White ? Brushes.Black : Brushes.White,
-                            BorderBrush = Brushes.Black,
-                            Width = 60,
-                            Height = 60,
+                            BorderBrush = Brushes.Gray,
+                            Width = 50,
+                            Height = 50,
                             BorderThickness = new Thickness(1),
                             CornerRadius = new CornerRadius(20)
                         };
