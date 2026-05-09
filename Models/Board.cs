@@ -16,6 +16,10 @@ namespace Chess.Models
         static Piece?[,] board = new Piece[8, 8];
         private static Grid? _mainGrid;
 
+        // State for selected piece and its valid moves
+        private static Piece? selectedPiece = null;
+        private static List<(int row, int col)> selectedMoves = new();
+
         public static void InitializeBoard(Grid mainGrid)
         {
             _mainGrid = mainGrid;
@@ -58,7 +62,7 @@ namespace Chess.Models
             }
         }
 
-        private static void renderPiece(Piece piece, int row, int col)
+        private static void renderPiece(Piece? piece, int row, int col)
         {
             if (piece != null)
             {
@@ -107,11 +111,103 @@ namespace Chess.Models
                     BorderThickness = new Thickness(5),
                     Tag = move
                 };
-                //square.MouseLeftButtonDown += Square_MouseLeftButtonDown; // Add logic for moving piece here
+
+                square.MouseLeftButtonDown += MoveSquare_MouseLeftButtonDown;
+
                 Grid.SetRow(square, move.row);
                 Grid.SetColumn(square, move.col);
                 mainGrid.Children.Add(square);
             });
+        }
+
+        private static void MoveSquare_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_mainGrid == null || selectedPiece == null)
+            {
+                return;
+            }
+
+            Border clickedSquare = (Border)sender;
+
+            if (clickedSquare.Tag == null)
+            {
+                return;
+            }
+
+            (int row, int col) = ((int row, int col))clickedSquare.Tag;
+
+            if (!selectedMoves.Contains((row, col)))
+            {
+                return;
+            }
+
+            Piece? targetPiece = getPieceAt(row, col);
+
+            if (targetPiece != null && targetPiece.Color == selectedPiece.Color)
+            {
+                return;
+            }
+
+            board[selectedPiece.Row, selectedPiece.Col] = null;
+
+            selectedPiece.Row = row;
+            selectedPiece.Col = col;
+
+            board[row, col] = selectedPiece;
+
+            selectedPiece = null;
+            selectedMoves.Clear();
+
+            ClearRenderedMoves();
+            RefreshPieces();
+        }
+
+        private static void RefreshPieces()
+        {
+            if (_mainGrid == null)
+            {
+                return;
+            }
+
+            List<UIElement> elementsToRemove = _mainGrid.Children
+                .OfType<Border>()
+                .Where(border => border.Tag is ValueTuple<int, int>)
+                .Cast<UIElement>()
+                .ToList();
+
+            foreach (UIElement element in elementsToRemove)
+            {
+                _mainGrid.Children.Remove(element);
+            }
+
+            for (int r = 0; r < 8; r++)
+            {
+                for (int c = 0; c < 8; c++)
+                {
+                    Piece? piece = board[r, c];
+
+                    renderPiece(piece, r, c);
+                }
+            }
+        }
+
+        private static void ClearRenderedMoves()
+        {
+            if (_mainGrid == null)
+            {
+                return;
+            }
+
+            List<UIElement> elementsToRemove = _mainGrid.Children
+                .OfType<Border>()
+                .Where(border => border.BorderBrush == Brushes.Green)
+                .Cast<UIElement>()
+                .ToList();
+
+            foreach (UIElement element in elementsToRemove)
+            {
+                _mainGrid.Children.Remove(element);
+            }
         }
 
         private static string GetPieceEmoji(PieceType type, Color color)
@@ -149,17 +245,35 @@ namespace Chess.Models
             }
             return null;
         }
-        // Place holder for clicking a piece, !!! ADD MISSING LOGIC !!!
+
         private static void Square_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (_mainGrid == null)
+            {
+                return;
+            }
+
             Border clickedSquare = (Border)sender;
 
             if (clickedSquare.Tag != null)
             {
-                (int row, int col) = ((int, int))clickedSquare.Tag;
+                (int row, int col) = ((int row, int col))clickedSquare.Tag;
 
-                List<(int row, int col)>? moves = getPieceAt(row, col).GetValidMoves();
-                renderMoves(_mainGrid, moves);
+                Piece? clickedPiece = getPieceAt(row, col);
+
+                if (clickedPiece == null)
+                {
+                    return;
+                }
+
+                if (selectedPiece == null || clickedPiece.Color == selectedPiece.Color)
+                {
+                    selectedPiece = clickedPiece;
+                    selectedMoves = selectedPiece.GetValidMoves();
+
+                    ClearRenderedMoves();
+                    renderMoves(_mainGrid, selectedMoves);
+                }
             }
         }
     }
