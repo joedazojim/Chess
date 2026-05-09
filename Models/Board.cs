@@ -4,18 +4,21 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Chess.Models
 {
     public class Board
     {
         static Piece?[,] board = new Piece[8, 8];
+        private static Grid? _mainGrid;
 
         public static void InitializeBoard(Grid mainGrid)
         {
+            _mainGrid = mainGrid;
             // Placing pawns
             for (int i = 0; i < 8; i++)
             {
@@ -50,40 +53,65 @@ namespace Chess.Models
 
                     Piece? piece = board[r, c];
 
-                    if (piece != null)
-                    {
-                        Border square = new Border
-                        {
-                            Background = piece.Color == Color.White ? Brushes.Black : Brushes.White,
-                            BorderBrush = Brushes.Gray,
-                            Width = 50,
-                            Height = 50,
-                            BorderThickness = new Thickness(1),
-                            CornerRadius = new CornerRadius(20)
-                        };
-
-                        square.MouseLeftButtonDown += Square_MouseLeftButtonDown;
-
-                        TextBlock pieceText = new TextBlock();
-                        pieceText.Text = GetPieceEmoji(piece.Type, piece.Color);
-                        pieceText.FontSize = 36;
-
-                        // Center 
-                        pieceText.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-                        pieceText.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-
-                        // Set color
-                        pieceText.Foreground = Brushes.Gray;
-
-                        square.Child = pieceText;
-
-                        Grid.SetRow(square, r);
-                        Grid.SetColumn(square, c);
-
-                        mainGrid.Children.Add(square);
-                    }
+                    renderPiece(piece, r, c);
                 }
             }
+        }
+
+        private static void renderPiece(Piece piece, int row, int col)
+        {
+            if (piece != null)
+            {
+                Border square = new Border
+                {
+                    Background = piece.Color == Color.White ? Brushes.Black : Brushes.White,
+                    BorderBrush = Brushes.Gray,
+                    Width = 50,
+                    Height = 50,
+                    BorderThickness = new Thickness(1),
+                    CornerRadius = new CornerRadius(20),
+                    Tag = (row, col)
+                };
+
+                square.MouseLeftButtonDown += Square_MouseLeftButtonDown;
+
+                TextBlock pieceText = new TextBlock();
+                pieceText.Text = GetPieceEmoji(piece.Type, piece.Color);
+                pieceText.FontSize = 36;
+
+                // Center 
+                pieceText.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                pieceText.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+                // Set color
+                pieceText.Foreground = Brushes.Gray;
+
+                square.Child = pieceText;
+
+                Grid.SetRow(square, row);
+                Grid.SetColumn(square, col);
+
+                _mainGrid.Children.Add(square);
+            }
+
+        }
+
+        private static void renderMoves(Grid mainGrid, List<(int row, int col)> moves)
+        {
+            moves.ForEach(move =>
+            {
+                Border square = new Border
+                {
+                    Background = Brushes.Transparent,
+                    BorderBrush = Brushes.Green,
+                    BorderThickness = new Thickness(5),
+                    Tag = move
+                };
+                //square.MouseLeftButtonDown += Square_MouseLeftButtonDown; // Add logic for moving piece here
+                Grid.SetRow(square, move.row);
+                Grid.SetColumn(square, move.col);
+                mainGrid.Children.Add(square);
+            });
         }
 
         private static string GetPieceEmoji(PieceType type, Color color)
@@ -126,7 +154,13 @@ namespace Chess.Models
         {
             Border clickedSquare = (Border)sender;
 
-            MessageBox.Show("Square clicked!");
+            if (clickedSquare.Tag != null)
+            {
+                (int row, int col) = ((int, int))clickedSquare.Tag;
+
+                List<(int row, int col)>? moves = getPieceAt(row, col).GetValidMoves();
+                renderMoves(_mainGrid, moves);
+            }
         }
     }
 }
