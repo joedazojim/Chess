@@ -15,6 +15,7 @@ namespace Chess.Models
     {
         static Piece?[,] board = new Piece[8, 8];
         private static Grid? _mainGrid;
+        public static Color CurrentTurn { get; private set; } = Color.White;
 
         // State for selected piece and its valid moves
         private static Piece? selectedPiece = null;
@@ -43,8 +44,8 @@ namespace Chess.Models
             board[7, 0] = new Tower(Color.Black, PieceType.Tower, 7, 0);
             board[7, 1] = new Knight(Color.Black, PieceType.Knight, 7, 1);
             board[7, 2] = new Bishop(Color.Black, PieceType.Bishop, 7, 2);
-            board[7, 3] = new Queen(Color.Black, PieceType.Queen, 7, 3);
-            board[7, 4] = new King(Color.Black, PieceType.King, 7, 4);
+            board[7, 3] = new King(Color.Black, PieceType.King, 7, 3);
+            board[7, 4] = new Queen(Color.Black, PieceType.Queen, 7, 4);
             board[7, 5] = new Bishop(Color.Black, PieceType.Bishop, 7, 5);
             board[7, 6] = new Knight(Color.Black, PieceType.Knight, 7, 6);
             board[7, 7] = new Tower(Color.Black, PieceType.Tower, 7, 7);
@@ -68,7 +69,7 @@ namespace Chess.Models
             {
                 Border square = new Border
                 {
-                    Background = piece.Color == Color.White ? Brushes.Black : Brushes.White,
+                    Background = piece.Color == Color.White ? Brushes.White : Brushes.Black,
                     BorderBrush = Brushes.Gray,
                     Width = 50,
                     Height = 50,
@@ -148,12 +149,22 @@ namespace Chess.Models
                 return;
             }
 
+            if (selectedPiece.Color != CurrentTurn)
+            {
+                Console.WriteLine("Not your turn.");
+                return;
+            }
+
             board[selectedPiece.Row, selectedPiece.Col] = null;
 
             selectedPiece.Row = row;
             selectedPiece.Col = col;
 
             board[row, col] = selectedPiece;
+
+            CurrentTurn = CurrentTurn == Color.White
+            ? Color.Black
+            : Color.White;
 
             selectedPiece = null;
             selectedMoves.Clear();
@@ -262,6 +273,11 @@ namespace Chess.Models
                 Piece? clickedPiece = getPieceAt(row, col);
 
                 if (clickedPiece == null)
+                {
+                    return;
+                }
+
+                if (clickedPiece.Color != CurrentTurn)
                 {
                     return;
                 }
